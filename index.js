@@ -1,4 +1,6 @@
-const API_URL = `https://dummyjson.com/products`;
+const API_URL = "https://dummyjson.com/products";
+
+const productsContainer = document.getElementById("product-list");
 
 function createCard(product) {
   const card = document.createElement("div");
@@ -46,3 +48,46 @@ function createCard(product) {
 
   return card;
 }
+
+function createMessageBox(message, type = "success") {
+  const cl = `alert-${type}`;
+  const errorMessageBox = document.createElement("div");
+  errorMessageBox.classList.add("alert", cl);
+  errorMessageBox.innerText = message;
+
+  return errorMessageBox;
+}
+
+function handleLoaded() {
+  const loader = document.querySelector(".loader");
+  loader.classList.add("hidden");
+}
+
+function getProducts() {
+  return fetch(API_URL)
+    .then((response) => {
+      handleLoaded();
+      if (!response.ok) {
+        throw new Error("Невдалось завантажити товари. Спробуйте пізніше");
+      }
+
+      return response.json();
+    })
+    .then(({ products }) => {
+      if (!products.length) {
+        const errorMessageBox = createMessageBox("Товари відсутні");
+        productsContainer.appendChild(errorMessageBox, "success");
+      }
+
+      products.forEach((product) => {
+        const card = createCard(product);
+        productsContainer.appendChild(card);
+      });
+    })
+    .catch((error) => {
+      const errorMessageBox = createMessageBox(error.message);
+      productsContainer.appendChild(errorMessageBox, "error");
+    });
+}
+
+getProducts();
