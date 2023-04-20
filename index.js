@@ -1,4 +1,4 @@
-const API_URL = `https://dummyjson.com/docs/products`;
+const API_URL = `https://dummyjson.com/products`;
 
 function createCard(product) {
   const card = document.createElement("div");
